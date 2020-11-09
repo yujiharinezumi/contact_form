@@ -2,6 +2,8 @@
 
 session_start();
 
+require 'validation.php';
+
 header('X-FRAME-OPTIONS:DENY');
 
 function h($str)
@@ -10,13 +12,18 @@ function h($str)
 }
 
 
+
+
 echo '<pre>';
 var_dump($_POST);
 echo '</pre>';
 
 $pageFlag = 0;
 
-if (!empty($_POST['btn_confirm'])){
+$error = validation($_POST);
+
+
+if (!empty($_POST['btn_confirm']) && empty($error)){
     $pageFlag = 1;
 }
 
@@ -41,6 +48,16 @@ if(!isset($_SESSION['csrfToken'])){
 $token = $_SESSION['csrfToken'];
 
 ?>
+
+<?php if(!empty($_POST['btn_confirm']) && !empty($error)) :?>
+<ul>
+<?php foreach($error as $value) : ?>
+<li><?php echo $value ; ?></li>
+<?php endforeach ;?>
+</ul>
+<?php endif ;?>
+
+
 
 <form method="POST" action="input.php"> 
 氏名
